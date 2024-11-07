@@ -1,12 +1,14 @@
 import React from 'react';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import { startGame, endGame, incrementScore } from '../redux/slices/gameSlice';
+import { startGame, endGame } from '../redux/slices/gameSlice';
 import { Card, Button, Title, Text } from '@mantine/core';
 
-const DinoGame: React.FC = () => {
+const Launcher: React.FC = () => {
   const dispatch = useAppDispatch();
   const score = useAppSelector((state) => state.game.score);
   const isRunning = useAppSelector((state) => state.game.isRunning);
+  console.log(score);
+  
 
   return (
     <Card style={{ textAlign: 'center', margin: 'auto', width: '50%' }} p={5} withBorder>
@@ -21,4 +23,4 @@ const DinoGame: React.FC = () => {
   );
 };
 
-export default DinoGame;
+export default Launcher;

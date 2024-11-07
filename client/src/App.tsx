@@ -1,11 +1,23 @@
 import React from 'react';
-import DinoGame from './components/DinoGame';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './components/Auth/Login';
+import Registration from './components/Auth/Registration';
+import Launcher from './components/Launcher';
+import AuthSwitcher from './pages/AuthSwitcher';
+import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <DinoGame />
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<AuthSwitcher />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Registration />} />
+          <Route path="/launcher" element={<Launcher />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
