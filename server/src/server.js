@@ -1,43 +1,48 @@
-
 const express = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 const cors = require('cors');
-
-dotenv.config();
+const { helmet, rateLimit } = require('./middlewares/security/index');
+require('dotenv').config();
 
 const app = express();
+
+// Middlewares
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(helmet);
+app.use(rateLimit);
 
-const PORT = process.env.PORT || 5001;
+// Routes
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/users', require('./routes/user'));
+app.use('/api/scores', require('./routes/scores'));
 
-// CORS Configuration
-const corsOptions = {
-  origin: 'http://localhost:3000', 
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+
+// 404 handler 
+app.use((req, res) => {
+  res.status(404).json({ 
+    error: 'Not Found',
+    message: `Route ${req.originalUrl} not found`
+  });
+});
+
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something broke!' });
+});
+
+// Database connection
+if (process.env.NODE_ENV !== 'test') {
+  mongoose.connect(process.env.MONGODB_URI)
+    .then(() => {
+      console.log('Connected to MongoDB');
+      const PORT = process.env.PORT || 5001;
+      app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+      });
+    })
+    .catch(err => console.error('MongoDB connection error:', err));
 };
 
-app.use(cors(corsOptions));
-
-// MongoDB connection
-mongoose.connect(process.env.MONGO_URI, {})
-  .then(() => {
-    console.log('MongoDB connected');
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  })
-  .catch(err => {
-    console.error('MongoDB connection error:', err);
-  });
-
-// Import and use routes
-const authRoutes = require('./routes/auth');
-app.use('/api/auth', authRoutes);
-
-app.get('/', (req, res) => {
-  res.send('API is running');
-});
+module.exports = app;

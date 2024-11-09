@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../redux/hooks';
 import { setUser } from '../../redux/slices/userSlice';
-import { log } from 'console';
+
 
 const Login : React.FC  = () => {
   const navigate = useNavigate();
@@ -17,11 +17,16 @@ const Login : React.FC  = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:5001/api/auth/login', { accountName, password });
+      localStorage.setItem('token', response.data.token);
       dispatch(setUser({
-        id: response.data.user.id,
-        accountName: response.data.user.accountName,
-        username: response.data.user.username,    
+        id: response.data._id,
+        accountName: response.data.accountName,
+        username: response.data.username,
+        bestScores: response.data.bestScores
       }));
+
+      localStorage.setItem('token', response.data.token);
+
       setMessage(response.data.message);
       navigate('/launcher');
     } catch (error) {

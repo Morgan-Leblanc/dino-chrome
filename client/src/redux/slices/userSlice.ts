@@ -20,26 +20,26 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<{ id: string; accountName: string; username: string }>) => {
+    setUser: (state, action: PayloadAction<{ 
+      id: string; 
+      accountName: string; 
+      username: string;
+      bestScores: number[];
+    }>) => {
       state.id = action.payload.id;
       state.accountName = action.payload.accountName;
       state.username = action.payload.username;
+      state.bestScores = action.payload.bestScores;
       state.isAuthenticated = true;
     },
-    updateBestScores: (state, action: PayloadAction<number>) => {
-      state.bestScores.push(action.payload);
-      state.bestScores.sort((a, b) => b - a); 
-      state.bestScores = state.bestScores.slice(0, 3); 
+    setBestScores: (state, action: PayloadAction<number[]>) => {
+      state.bestScores = action.payload;
     },
-    clearUser: (state) => {
-      state.id = null;
-      state.accountName = null;
-      state.username = null;
-      state.bestScores = [];
-      state.isAuthenticated = false;
+    clearUser: () => {
+      return initialState;
     }
   },
 });
 
-export const { setUser, updateBestScores, clearUser } = userSlice.actions;
+export const { setUser, setBestScores, clearUser } = userSlice.actions;
 export default userSlice.reducer;

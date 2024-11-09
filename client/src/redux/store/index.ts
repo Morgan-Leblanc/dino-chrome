@@ -5,7 +5,7 @@ import userReducer from '../slices/userSlice'
 const store = configureStore({
   reducer: {
     game: gameReducer,
-    user:  userReducer
+    user: userReducer
   },
 });
 
