@@ -1,25 +1,55 @@
-const AuthService = require('../services/authService');
+import AuthService from '../services/authService.js';
 
-class AuthController {
-  static async register(req, res) {
-    try {
-      const { accountName, username, password } = req.body;
-      const result = await AuthService.register({ accountName, username, password });
-      res.status(201).json(result);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
+export const register = async (req, res) => {
+  try {
+    const { accountName, username, password } = req.body;
+
+    if (!accountName || !username || !password) {
+      return res.status(400).json({ 
+        error: 'Tous les champs sont requis' 
+      });
     }
-  }
 
-  static async login(req, res) {
-    try {
-      const { accountName, password } = req.body;
-      const result = await AuthService.login(accountName, password);
-      res.json(result);
-    } catch (error) {
-      res.status(401).json({ error: error.message });
+    const result = await AuthService.register({ 
+      accountName, 
+      username, 
+      password 
+    });
+
+    return res.status(201).json({
+      success: true,
+      data: result
+    });
+
+  } catch (error) {
+    return res.status(400).json({ 
+      success: false,
+      error: error.message 
+    });
+  }
+};
+
+export const login = async (req, res) => {
+  try {
+    const { accountName, password } = req.body;
+
+    if (!accountName || !password) {
+      return res.status(400).json({ 
+        error: 'Nom de compte et mot de passe requis' 
+      });
     }
-  }
-}
 
-module.exports = AuthController; 
+    const result = await AuthService.login(accountName, password);
+
+    return res.status(200).json({
+      success: true,
+      data: result
+    });
+
+  } catch (error) {
+    return res.status(401).json({ 
+      success: false,
+      error: error.message 
+    });
+  }
+};

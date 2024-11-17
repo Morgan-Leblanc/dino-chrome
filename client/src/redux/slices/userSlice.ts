@@ -1,45 +1,49 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../store';
+
+type CharacterType = 'boy' | 'girl' | null;
+type Score = number;
+
 
 interface UserState {
   id: string | null;
   accountName: string | null;
   username: string | null;
-  bestScores: number[];
-  isAuthenticated: boolean;
+  token: string | null,
+  bestScores: Score[];
+  selectedCharacter: CharacterType;
 }
 
 const initialState: UserState = {
   id: null,
   accountName: null,
   username: null,
+  token: null,
   bestScores: [],
-  isAuthenticated: false,
+  selectedCharacter: null
 };
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<{ 
-      id: string; 
-      accountName: string; 
-      username: string;
-      bestScores: number[];
-    }>) => {
-      state.id = action.payload.id;
-      state.accountName = action.payload.accountName;
-      state.username = action.payload.username;
-      state.bestScores = action.payload.bestScores;
-      state.isAuthenticated = true;
+    setUser: (state, action: PayloadAction<Partial<UserState>>) => {
+      return { ...state, ...action.payload };
     },
-    setBestScores: (state, action: PayloadAction<number[]>) => {
-      state.bestScores = action.payload;
+    setCharacter: (state, action: PayloadAction<CharacterType>) => {
+      state.selectedCharacter = action.payload;
     },
-    clearUser: () => {
-      return initialState;
-    }
+    logout: () => initialState,
   },
 });
 
-export const { setUser, setBestScores, clearUser } = userSlice.actions;
+export const selectUser = (state: RootState) =>  state.user;
+export const selectSelectedCharacter = (state: RootState) => state.user.selectedCharacter;
+
+export const { 
+  setUser, 
+  setCharacter, 
+  logout 
+} = userSlice.actions;
+
 export default userSlice.reducer;

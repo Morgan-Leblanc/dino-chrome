@@ -1,33 +1,35 @@
-const ScoreService = require('../services/scoreService');
+import ScoreService from '../services/scoreService.js';
 
-class ScoreController {
-  static async saveScore(req, res) {
-    try {
-      const scoreData = { ...req.body, userId: req.user.id };
-      const score = await ScoreService.createScore(scoreData);
-      res.status(201).json(score);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
+export const saveScore = async (req, res) => {
+  try {
+    const { score, userId } = req.body;
+    
+    if (!score || !userId) {
+      return res.status(400).json({ 
+        message: 'Données manquantes',
+        received: { score, userId }
+      });
     }
-  }
 
-  static async getTopScores(req, res) {
-    try {
-      const scores = await ScoreService.getTopScores();
-      res.json(scores);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
+    const savedScore = await ScoreService.createScore({ score, userId });
+    res.status(201).json({
+      message: 'Score enregistré avec succès',
+      data: savedScore
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Erreur lors de la sauvegarde du score',
+      error: error.message 
+    });
   }
+};
 
-  static async getUserScores(req, res) {
-    try {
-      const scores = await ScoreService.getUserScores(req.user.id);
-      res.json(scores);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
+export const getTopThreeScores = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const topScores = await ScoreService.getTopThreeScores(userId);
+    res.status(200).json(topScores);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
-}
-
-module.exports = ScoreController; 
+};

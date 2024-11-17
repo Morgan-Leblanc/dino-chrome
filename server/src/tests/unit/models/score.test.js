@@ -1,5 +1,5 @@
-const Score = require('../../../models/Score');
-const mongoose = require('mongoose');
+import  Score  from '../../../models/ScoreModel.js';
+import mongoose from 'mongoose';
 
 describe('Score Model', () => {
 
@@ -10,8 +10,6 @@ describe('Score Model', () => {
     } catch (error) {
       expect(error.errors.userId).toBeDefined();
       expect(error.errors.score).toBeDefined();
-      expect(error.errors.duration).toBeDefined();
-      expect(error.errors.distance).toBeDefined();
     }
   });
 
@@ -19,12 +17,9 @@ describe('Score Model', () => {
     const scoreData = {
       userId: new mongoose.Types.ObjectId(),
       score: 100,
-      duration: 60,
-      obstacles: 5,
-      distance: 1000
     };
 
     const score = await Score.create(scoreData);
     expect(score).toMatchObject(scoreData);
-  }, 10000);
+  });
 });

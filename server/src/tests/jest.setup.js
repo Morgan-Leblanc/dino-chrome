@@ -1,6 +1,8 @@
-const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
-require('dotenv').config();
+import mongoose from 'mongoose';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 let mongoServer;
 

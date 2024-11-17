@@ -1,4 +1,4 @@
-const User = require('../../../models/User');
+import  User  from '../../../models/UserModel.js';
 
 describe('User Model', () => {
   it('should validate required fields', async () => {

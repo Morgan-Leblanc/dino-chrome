@@ -1,8 +1,9 @@
-const router = require('express').Router();
-const UserController = require('../controllers/userController');
-const auth = require('../middlewares/validation/authValidation');
+import { Router } from 'express';
+import { getProfile } from '../controllers/userController.js';
+import auth from '../middlewares/validation/authValidation.js';
 
-router.get('/me', auth, UserController.getProfile);
-router.put('/profile', auth, UserController.updateProfile);
+const router = Router();
 
-module.exports = router;
+router.get('/me', auth, getProfile);
+
+export default router;

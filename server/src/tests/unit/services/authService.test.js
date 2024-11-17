@@ -1,4 +1,5 @@
-const AuthService = require('../../../services/authService');
+
+import AuthService from '../../../services/authService';
 
 describe('AuthService', () => {
   describe('register', () => {

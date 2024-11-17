@@ -1,18 +1,21 @@
-const User = require('../models/User');
+import User from '../models/UserModel.js';
 
-class UserService {
-  static async findById(userId) {
-    return User.findById(userId).select('-password');
+const findById = async (userId) => {
+  if (!userId) {
+    throw new Error('UserId est requis');
   }
-
-  static async updateUser(userId, updateData) {
-    const { password, ...safeUpdateData } = updateData;
-    return User.findByIdAndUpdate(
-      userId,
-      { $set: safeUpdateData },
-      { new: true, runValidators: true }
-    ).select('-password');
+  
+  const user = await User.findById(userId).select('-password');
+  
+  if (!user) {
+    throw new Error('Utilisateur non trouvé');
   }
-}
+  
+  return user;
+};
 
-module.exports = UserService;
+const UserService = {
+  findById
+};
+
+export default UserService;

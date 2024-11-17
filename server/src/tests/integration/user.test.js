@@ -1,19 +1,20 @@
-const request = require('supertest');
-const app = require('../../server');
-const User = require('../../models/User');
-const { generateToken } = require('../../services/authService');
+import request from 'supertest';
+import app from '../../server';
+import User from '../../models/UserModel.js';
+import AuthService from '../../services/authService.js';
 
 describe('User Routes', () => {
   let token;
-  let user;
+  let testUser;
 
   beforeEach(async () => {
-    user = await User.create({
+    testUser = await User.create({
       accountName: 'testuser',
       username: 'Test User',
       password: 'password123'
     });
-    token = generateToken(user._id);
+
+    token = AuthService.generateToken(testUser._id);
   });
 
   describe('GET /api/users/me', () => {
@@ -22,24 +23,18 @@ describe('User Routes', () => {
         .get('/api/users/me')
         .set('Authorization', `Bearer ${token}`);
 
+      if (response.status !== 200) {
+        console.log('Error response:', response.body);
+      }
+
       expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('user');
       expect(response.body.user).toHaveProperty('accountName', 'testuser');
+      expect(response.body.user).toHaveProperty('username', 'Test User');
     });
   });
 
-  describe('PUT /api/users/profile', () => {
-    it('should update user profile', async () => {
-      const response = await request(app)
-        .put('/api/users/profile')
-        .set('Authorization', `Bearer ${token}`)
-        .send({
-          username: 'Updated Name'
-        });
-
-      console.log('Response body:', response.body);
-
-      expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('username', 'Updated Name');
-    });
+  afterEach(async () => {
+    await User.deleteMany({});
   });
 });

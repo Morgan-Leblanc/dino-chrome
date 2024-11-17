@@ -1,7 +1,6 @@
-
-const ScoreService = require('../../../services/scoreService');
-const Score = require('../../../models/Score');
-const User = require('../../../models/User');
+import  ScoreService  from '../../../services/scoreService.js';
+import  Score  from '../../../models/ScoreModel.js';
+import  User  from '../../../models/UserModel.js';
 
 describe('ScoreService', () => {
   let testUser;
@@ -10,21 +9,17 @@ describe('ScoreService', () => {
     testUser = await User.create({
       accountName: 'testuser',
       username: 'Test User',
-      email: 'test@test.com',
       password: 'password123'
     });
 
     await Score.create({
       userId: testUser._id,
       score: 100,
-      distance: 1000,  
-      duration: 60,    
-      obstacles: 5
     });
   });
 
   it('should get top scores', async () => {
-    const topScores = await ScoreService.getTopScores();
+    const topScores = await ScoreService.getTopThreeScores();
     expect(topScores).toBeDefined();
   });
 });

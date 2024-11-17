@@ -1,31 +1,22 @@
-const UserService = require('../services/userService');
-const ScoreService = require('../services/scoreService');
+import UserService from '../services/userService.js';
+import ScoreService from '../services/scoreService.js';
 
-class UserController {
-  static async getProfile(req, res) {
-    try {
-      const user = await UserService.findById(req.user.id);
-      const stats = await ScoreService.getUserStats(req.user.id);
-      const recentScores = await ScoreService.getScoreHistory(req.user.id, 10);
-
-      res.json({
-        user,
-        stats,
-        recentScores
-      });
-    } catch (error) {
-      res.status(400).json({ error: error.message });
+export const getProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await UserService.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
-  }
 
-  static async updateProfile(req, res) {
-    try {
-      const user = await UserService.updateUser(req.user.id, req.body);
-      res.json(user);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
+    res.status(200).json({
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: "Erreur lors de la récupération du profil", 
+      error: error.message 
+    });
   }
-}
-
-module.exports = UserController; 
+};

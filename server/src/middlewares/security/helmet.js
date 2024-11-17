@@ -1,6 +1,6 @@
-const helmet = require('helmet');
+import helmet from 'helmet';
 
-module.exports = helmet({
+export default helmet({
   xssFilter: true,
 
   frameguard: {

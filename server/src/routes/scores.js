@@ -1,9 +1,10 @@
-const router = require('express').Router();
-const ScoreController = require('../controllers/scoreController');
-const auth = require('../middlewares/validation/authValidation');
+import { Router } from 'express';
+import { saveScore, getTopThreeScores } from '../controllers/scoreController.js';
+import auth from '../middlewares/validation/authValidation.js';
 
-router.post('/', auth, ScoreController.saveScore);
-router.get('/leaderboard', ScoreController.getTopScores);
-router.get('/me', auth, ScoreController.getUserScores);
+const router = Router();
 
-module.exports = router; 
+router.post('/savescore', auth, saveScore);
+router.get('/topscore/:userId', auth, getTopThreeScores);
+
+export default router; 

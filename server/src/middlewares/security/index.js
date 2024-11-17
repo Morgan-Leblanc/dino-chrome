@@ -1,7 +1,7 @@
-const helmet = require('./helmet');
-const rateLimit = require('./rateLimit');
+import helmet from './helmet.js';
+import rateLimit from './rateLimit.js';
 
-module.exports = {
+export {
   helmet,
-  rateLimit,
+  rateLimit
 };

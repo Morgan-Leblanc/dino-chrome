@@ -1,6 +1,6 @@
-const request = require('supertest');
-const app = require('../../server');
-const User = require('../../models/User');
+import request from 'supertest';
+import app from '../../server';
+import User from '../../models/UserModel';
 
 describe('Auth Routes', () => {
   describe('POST /api/auth/register', () => {
@@ -14,8 +14,8 @@ describe('Auth Routes', () => {
         });
 
       expect(response.status).toBe(201);
-      expect(response.body).toHaveProperty('token');
-      expect(response.body.user).toHaveProperty('accountName', 'testuser');
+      expect(response.body.data).toHaveProperty('token');
+      expect(response.body.data.user).toHaveProperty('accountName', 'testuser');
     });
 
     it('should not register user with existing accountName', async () => {
