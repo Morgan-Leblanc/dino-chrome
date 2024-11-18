@@ -17,7 +17,7 @@ const Login: React.FC = () => {
     
     try {
       const { data: { data: { token, user } } } = await axios.post(
-        'http://localhost:5001/api/auth/login',
+        `${process.env.REACT_APP_API_URL}/api/auth/login`,
         { accountName, password }
       );
   

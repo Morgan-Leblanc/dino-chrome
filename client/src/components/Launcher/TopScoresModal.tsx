@@ -28,7 +28,7 @@ export const TopScoresModal = ({ isOpen, onClose }: TopScoresModalProps) => {
       setError(null);
 
       try {
-        const response = await axios.get(`http://localhost:5001/api/scores/topscore/${userId}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/scores/topscore/${userId}`);
         setScores(response.data);
       } catch (err) {
         setError("Can't get the scores");

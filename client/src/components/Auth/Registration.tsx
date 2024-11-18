@@ -14,7 +14,7 @@ const Registration : React.FC  = () => {
   const handleRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5001/api/auth/register', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/register`, {
         accountName,
         username,
         password
