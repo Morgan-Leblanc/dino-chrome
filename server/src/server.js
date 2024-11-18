@@ -13,23 +13,41 @@ const app = express();
 
 const allowedOrigins = [
   'https://dino-chrome.vercel.app',
-  'https://dino-chrome-1j5s0ljc9-morganleblancs-projects.vercel.app',
-  'http://localhost:3000' // Pour le développement local
+  'https://dino-chrome-omcwts9qe-morganleblancs-projects.vercel.app',
+  'http://localhost:3000'
 ];
 
 app.use(cors({
   origin: function(origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    console.log('Request from origin:', origin);
+
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.log('Blocked origin:', origin);
+      callback(new Error('CORS not allowed'));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
 app.use(express.json());
 app.use(helmet);
 app.use(rateLimit);
+
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
+  console.log('Headers:', req.headers);
+  next();
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
