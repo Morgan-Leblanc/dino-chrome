@@ -48,7 +48,6 @@ export const {
   collectScroll 
 } = gameSlice.actions;
 
-// Selectors
 export const selectScore = (state: RootState) => state.game.score;
 export const selectFinalScore = (state: RootState) => state.game.finalScore;
 export const selectScrollsCollected = (state: RootState) => state.game.scrollsCollected;

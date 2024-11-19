@@ -43,7 +43,6 @@ export const useGameLoop = ({
     const characterHitbox = getHitbox(character);
     const currentObstacles = gameStateRef.current.obstacles;
     
-    // Check collisions et collecte de parchemins
     for (const obstacle of currentObstacles) {
       const obstacleElement = document.querySelector(`[data-obstacle-id="${obstacle.id}"]`);
       if (!obstacleElement) continue;
@@ -59,7 +58,6 @@ export const useGameLoop = ({
       }
     }
 
-    // Update obstacle positions
     setGameState(prev => ({
       ...prev,
       obstacles: prev.obstacles

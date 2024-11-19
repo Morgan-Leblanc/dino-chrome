@@ -5,6 +5,7 @@ export const GAME_CONFIG = {
     GAME_WIDTH: window.innerWidth,
     JUMP_HEIGHT: 300,
     JUMP_DURATION: 600,
+    JUMP_COOLDOWN: 500,
     GROUND_HEIGHT: 20,
     OBSTACLE_SPEED: 5,
     SPAWN_INTERVAL: 2000,

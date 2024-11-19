@@ -70,7 +70,7 @@ const GameBase = () => {
   // Game controls & hooks
   const { playMusic, stopMusic } = useGameMusic();
   const { resetBackground } = useBackground(gameRef);
-  const { jump } = useJump({ isRunning: gameState.isRunning, isJumping: gameState.isJumping, setGameState });
+  const { jump, canJump } = useJump({ isRunning: gameState.isRunning, isJumping: gameState.isJumping, setGameState });
   const { collectScroll: handleCollectScroll } = useScrollCollection({
     setGameState,
     onCollect: () => dispatch(collectScroll())
@@ -119,6 +119,7 @@ const GameBase = () => {
         isJumping={gameState.isJumping}
         selectedCharacter={character as 'boy' | 'girl'}
         onJump={jump}
+        canJump={canJump}
       />
       
       <Obstacles obstacles={gameState.obstacles} score={score} />
