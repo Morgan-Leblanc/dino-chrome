@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextInput, PasswordInput, Button, Text, Box, Title } from '@mantine/core';
+import { TextInput, PasswordInput, Button, Text, Title } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { setUser } from '../../redux/slices/userSlice';
 import { useDispatch } from 'react-redux';
@@ -23,7 +23,6 @@ const Login: React.FC = () => {
         id: user._id,
         accountName: user.accountName,
         username: user.username,
-        bestScores: user.bestScores ?? [],
         token
       }));
 

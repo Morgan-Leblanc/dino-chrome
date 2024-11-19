@@ -27,27 +27,25 @@ const gameSlice = createSlice({
     incrementScore: (state) => {
       state.score += 1;
     },
-    setFinalScore: (state) => {
+    endGame: (state) => {
       state.finalScore = state.score;
-      state.score = 0;
+      state.isGameStarted = false;
+    },
+    resetGame: (state) => {
+      return initialState;
     },
     collectScroll: (state) => {
       state.scrollsCollected += 1;
-    },
-    resetGame: (state) => {
-      state.score = 0;
-      state.scrollsCollected = 0;
-      state.isGameStarted = false;
     },
   },
 });
 
 export const { 
-  startGame,
+  startGame, 
   incrementScore, 
-  setFinalScore, 
-  collectScroll, 
-  resetGame 
+  endGame, 
+  resetGame, 
+  collectScroll 
 } = gameSlice.actions;
 
 // Selectors

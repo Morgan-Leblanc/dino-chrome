@@ -1,6 +1,10 @@
 import  User  from '../../../models/UserModel.js';
 
 describe('User Model', () => {
+  beforeEach(async () => {
+    await User.deleteMany({});
+  });
+
   it('should validate required fields', async () => {
     try {
       await User.create({});
@@ -26,6 +30,7 @@ describe('User Model', () => {
       });
       fail('Should not create user with duplicate accountName');
     } catch (error) {
+      expect(error.name).toBe('MongoServerError');
       expect(error.code).toBe(11000);
     }
   });

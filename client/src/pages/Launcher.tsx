@@ -3,7 +3,6 @@ import { Card, Box, Container, Stack, Center } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'redux/store';
-import { startGame } from '../redux/slices/gameSlice';
 import { logout } from '../redux/slices/userSlice';
 import { HeaderButtons } from '../components/Launcher/HeaderButtons';
 import { GameTitle } from '../components/Launcher/GameTitle';
@@ -22,7 +21,6 @@ const Launcher: React.FC = () => {
   const characterSelected = useSelector((state: RootState) => state.user.selectedCharacter);
 
   const handleStartGame = () => {
-    dispatch(startGame());
     navigate('/game');
   };
 

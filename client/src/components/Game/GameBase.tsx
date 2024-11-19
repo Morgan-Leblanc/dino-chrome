@@ -1,8 +1,5 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectSelectedCharacter } from '../../redux/slices/userSlice';
-import { scoreService } from '../services/scoreService';
-import { selectUser } from '../../redux/slices/userSlice';
 
 // Components
 import {
@@ -15,19 +12,17 @@ import {
   GameBackground
 } from './components';
 
-// Redux actions & selectors
+// Redux
 import { 
   incrementScore, 
-  setFinalScore, 
-  collectScroll as collectScrollAction, 
-  resetGame as resetGameAction,
+  collectScroll, 
   selectScore,
   selectFinalScore,
   selectScrollsCollected,
+  startGame,
+  endGame,
 } from '../../redux/slices/gameSlice';
-
-// Types
-import { GameState } from './types';
+import { selectSelectedCharacter, selectUser } from '../../redux/slices/userSlice';
 
 // Custom hooks
 import { 
@@ -40,78 +35,71 @@ import {
   useCollisionHandler
 } from './hooks';
 
-import {INITIAL_STATE} from './config/constants'
+import { INITIAL_STATE } from './config/constants';
+import { GameState } from './types';
+import { scoreService } from 'components/services/scoreService';
 
 const GameBase = () => {
-  // States & Refs
   const [gameState, setGameState] = useState<GameState>(INITIAL_STATE);
   const gameRef = useRef<HTMLDivElement>(null);
-  const isGameRunning = useRef(false);
+  const isGameRunning = useRef(gameState.isRunning);
 
-  // Redux
+  // Redux selectors
   const dispatch = useDispatch();
-  const selectedCharacter = useSelector(selectSelectedCharacter);
+  const character = useSelector(selectSelectedCharacter);
   const user = useSelector(selectUser);
   const score = useSelector(selectScore);
   const finalScore = useSelector(selectFinalScore);
   const scrollsCollected = useSelector(selectScrollsCollected);
 
-  // Custom Hooks
-  const { playMusic, stopMusic } = useGameMusic();
-  const { resetBackground } = useBackground(gameRef);
-  
-  const { jump } = useJump({
-    isRunning: gameState.isRunning,
-    isJumping: gameState.isJumping,
-    setGameState
-  });
-
-  const { collectScroll } = useScrollCollection({
-    setGameState,
-    onCollect: () => dispatch(collectScrollAction())
-  });
-
-  useObstacles({
-    isRunning: gameState.isRunning,
-    setGameState
-  });
-
-    // Game controls
-
-    const startGame = () => {
-      isGameRunning.current = true;
-      playMusic();
-      setGameState({
-        ...INITIAL_STATE,
-        isRunning: true,
-      });
-    };
-    
-    const resetGame = async () => {
-      isGameRunning.current = false;
-      stopMusic();
-      resetBackground();
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      if (finalScore > 0 && user.id) {
+  useEffect(() => {
+    const saveScore = async () => {
+      if (!gameState.isRunning && score > 0 && user?.id) {
         try {
-          await scoreService.saveScore(finalScore, user.id);
+          await scoreService.saveScore(score, user.id);
+          console.log('Score saved:', score);
         } catch (error) {
-          console.error('Score save failed:', error);
+          console.error('Failed to save score:', error);
         }
       }
-  
-      dispatch(setFinalScore());
-      dispatch(resetGameAction());
-      setGameState(INITIAL_STATE);
     };
-  
 
-  // Collision handler
-  const { handleCollision } = useCollisionHandler({ resetGame });
+    saveScore();
+  }, [gameState.isRunning, score, user?.id]);
 
-  // Game loop
+  // Game controls & hooks
+  const { playMusic, stopMusic } = useGameMusic();
+  const { resetBackground } = useBackground(gameRef);
+  const { jump } = useJump({ isRunning: gameState.isRunning, isJumping: gameState.isJumping, setGameState });
+  const { collectScroll: handleCollectScroll } = useScrollCollection({
+    setGameState,
+    onCollect: () => dispatch(collectScroll())
+  });
+
+  useObstacles({ isRunning: gameState.isRunning, setGameState });
+
+  // Game actions
+  const startGameHandler = () => {
+    dispatch(startGame());
+    playMusic();
+    setGameState({ ...INITIAL_STATE, isRunning: true });
+  };
+
+  const gameOverHandler = () => {
+    stopMusic();
+    resetBackground();
+    
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+
+    dispatch(endGame());
+    setGameState(INITIAL_STATE);
+  };
+
+  // Game loop setup
+  const { handleCollision } = useCollisionHandler({resetGame: gameOverHandler});
+
   const { animationFrameRef } = useGameLoop({
     gameState,
     setGameState,
@@ -119,12 +107,9 @@ const GameBase = () => {
     isGameRunning,
     onCollision: handleCollision,
     onScoreIncrement: () => dispatch(incrementScore()),
-    onScrollCollect: collectScroll
+    onScrollCollect: handleCollectScroll
   });
 
-
-
-  // Render
   return (
     <GameBackground gameRef={gameRef}>
       <Score score={score} />
@@ -132,14 +117,14 @@ const GameBase = () => {
       
       <Character 
         isJumping={gameState.isJumping}
-        selectedCharacter={selectedCharacter as 'boy' | 'girl'}
+        selectedCharacter={character as 'boy' | 'girl'}
         onJump={jump}
       />
       
       <Obstacles obstacles={gameState.obstacles} score={score} />
       
       {!gameState.isRunning && (
-        <StartButton onStart={startGame} finalScore={finalScore} />
+        <StartButton onStart={startGameHandler} finalScore={finalScore} />
       )}
       
       {gameState.collectingScroll && (

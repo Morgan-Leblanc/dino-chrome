@@ -1,25 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 
-type CharacterType = 'boy' | 'girl' | null;
-type Score = number;
+type CharacterType = 'boy' | 'girl' | null; 
 
 
 interface UserState {
-  id: string | null;
-  accountName: string | null;
-  username: string | null;
-  token: string | null,
-  bestScores: Score[];
+  id: string ;
+  accountName: string ;
+  username: string;
+  token: string,
   selectedCharacter: CharacterType;
 }
 
 const initialState: UserState = {
-  id: null,
-  accountName: null,
-  username: null,
-  token: null,
-  bestScores: [],
+  id: '',
+  accountName: '',
+  username: '',
+  token: '',
   selectedCharacter: null
 };
 
