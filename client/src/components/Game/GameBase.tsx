@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectSelectedCharacter } from '../../redux/slices/userSlice';
+import { scoreService } from '../services/scoreService';
+import { selectUser } from '../../redux/slices/userSlice';
 
 // Components
 import {
@@ -28,24 +30,17 @@ import {
 import { GameState } from './types';
 
 // Custom hooks
-import { useJump } from './hooks/useJump';
-import { useGameLoop } from './hooks/useGameLoop';
-import { useGameMusic } from './hooks/useGameMusic';
-import { useBackground } from './hooks/useBackground';
-import { useObstacles } from './hooks/useObstacles';
-import { useScrollCollection } from './hooks/useScrollCollection';
+import { 
+  useJump,
+  useGameLoop,
+  useGameMusic,
+  useBackground,
+  useObstacles,
+  useScrollCollection,
+  useCollisionHandler
+} from './hooks';
 
-// API
-import { useScoreSubmission } from './hooks/useScoreSubmission';
-
-
-const INITIAL_STATE: GameState = {
-  isRunning: false,
-  isJumping: false,
-  obstacles: [],
-  collectingScroll: false,
-  lastCollectedScrollPosition: null,
-};
+import {INITIAL_STATE} from './config/constants'
 
 const GameBase = () => {
   // States & Refs
@@ -56,14 +51,10 @@ const GameBase = () => {
   // Redux
   const dispatch = useDispatch();
   const selectedCharacter = useSelector(selectSelectedCharacter);
+  const user = useSelector(selectUser);
   const score = useSelector(selectScore);
   const finalScore = useSelector(selectFinalScore);
   const scrollsCollected = useSelector(selectScrollsCollected);
-  
-
-  // API
-  const { submitScore } = useScoreSubmission();
-
 
   // Custom Hooks
   const { playMusic, stopMusic } = useGameMusic();
@@ -85,17 +76,40 @@ const GameBase = () => {
     setGameState
   });
 
+    // Game controls
+
+    const startGame = () => {
+      isGameRunning.current = true;
+      playMusic();
+      setGameState({
+        ...INITIAL_STATE,
+        isRunning: true,
+      });
+    };
+    
+    const resetGame = async () => {
+      isGameRunning.current = false;
+      stopMusic();
+      resetBackground();
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      if (finalScore > 0 && user.id) {
+        try {
+          await scoreService.saveScore(finalScore, user.id);
+        } catch (error) {
+          console.error('Score save failed:', error);
+        }
+      }
+  
+      dispatch(setFinalScore());
+      dispatch(resetGameAction());
+      setGameState(INITIAL_STATE);
+    };
+  
+
   // Collision handler
-  const handleCollision = () => {
-    const character = document.querySelector('[data-character]') as HTMLElement;
-    if (character) {
-      character.style.animation = 'collision 0.5s ease-in-out';
-      character.addEventListener('animationend', () => {
-        character.style.animation = '';
-        resetGame();
-      }, { once: true });
-    }
-  };
+  const { handleCollision } = useCollisionHandler({ resetGame });
 
   // Game loop
   const { animationFrameRef } = useGameLoop({
@@ -108,36 +122,7 @@ const GameBase = () => {
     onScrollCollect: collectScroll
   });
 
-  // Game controls
-  const resetGame = async () => {
-    isGameRunning.current = false;
-    stopMusic();
-    resetBackground();
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-    }
-    
-    // Sauvegarder le score avant de reset
-    try {
-      await submitScore(finalScore);
-    } catch (error) {
-      // Gérer l'erreur si nécessaire
-      console.error('Failed to save score:', error);
-    }
 
-    dispatch(setFinalScore());
-    dispatch(resetGameAction());
-    setGameState(INITIAL_STATE);
-  };
-
-  const startGame = () => {
-    isGameRunning.current = true;
-    playMusic();
-    setGameState({
-      ...INITIAL_STATE,
-      isRunning: true,
-    });
-  };
 
   // Render
   return (

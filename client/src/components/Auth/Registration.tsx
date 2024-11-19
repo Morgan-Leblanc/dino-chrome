@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
 import { TextInput, PasswordInput, Button, Text, Box, Title } from '@mantine/core';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { AuthLayout } from './AuthLayout';
+import { authService } from '../services/authServices';
 
 const Registration : React.FC  = () => {
   const navigate = useNavigate();
@@ -11,27 +11,19 @@ const Registration : React.FC  = () => {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
-  const handleRegistration = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleRegistration = async () => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/register`, {
-        accountName,
-        username,
-        password
-      });
-      setMessage(response.data.message);
+      const response = await authService.register(accountName, username, password);
+      setMessage(response.message);
       navigate('/login');
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        setMessage(error.response.data.message || "Registration error");
-      } else {
-        setMessage("Registration error");
-      }
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || "Registration error";
+      setMessage(errorMessage);
     }
   };
 
   return (
-    <Box style={{ maxWidth: 400 }} mx="auto">
+    <AuthLayout>
       <Title order={2}>Registration</Title>
       <TextInput
         label="Account name"
@@ -58,7 +50,7 @@ const Registration : React.FC  = () => {
         Register
       </Button>
       {message && <Text c="red" mt="md" component="p">{message}</Text>}
-    </Box>
+      </AuthLayout>
   );
 };
 

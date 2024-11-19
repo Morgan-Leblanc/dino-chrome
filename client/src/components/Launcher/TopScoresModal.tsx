@@ -1,6 +1,6 @@
 import { Modal, Text, Stack, Title, Box, Loader } from '@mantine/core';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useCallback, useEffect, useState } from 'react';
+import { scoreService } from '../services/scoreService';
 import { useSelector } from 'react-redux';
 import { RootState } from 'redux/store';
 
@@ -20,26 +20,28 @@ export const TopScoresModal = ({ isOpen, onClose }: TopScoresModalProps) => {
   const [error, setError] = useState<string | null>(null);
   const userId = useSelector((state: RootState) => state.user.id);
 
+  const fetchTopScores = useCallback(async () => {
+    if (!userId) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const scores = await scoreService.getTopScores(userId);
+      setScores(scores);
+    } catch (err) {
+      setError("Can't get the scores");
+      console.error('Error fetching scores:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
+
   useEffect(() => {
-    const fetchTopScores = async () => {
-      if (!isOpen || !userId) return;
-
-      setLoading(true);
-      setError(null);
-
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/scores/topscore/${userId}`);
-        setScores(response.data);
-      } catch (err) {
-        setError("Can't get the scores");
-        console.error("Error during the request:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTopScores();
-  }, [isOpen, userId]);
+    if (isOpen) {
+      fetchTopScores();
+    }
+  }, [isOpen, fetchTopScores]);
 
   return (
     <Modal
