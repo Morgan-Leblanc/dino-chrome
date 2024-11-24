@@ -1,5 +1,5 @@
 import  ScoreService  from '../../../services/scoreService.js';
-import  Score  from '../../../models/scoreModel.js';
+import  Score  from '../../../models/ScoreModel.js';
 import  User  from '../../../models/UserModel.js';
 
 describe('ScoreService', () => {

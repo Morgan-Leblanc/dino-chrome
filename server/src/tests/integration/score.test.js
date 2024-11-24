@@ -2,7 +2,7 @@ import request from 'supertest';
 import mongoose from 'mongoose';
 import app from '../../server.js';
 import User from '../../models/UserModel.js';
-import Score from '../../models/scoreModel.js';
+import Score from '../../models/ScoreModel.js';
 import AuthService from '../../services/authService.js';
 const { generateToken } = AuthService;
 
