@@ -1,4 +1,4 @@
-import Score from '../models/ScoreModel.js';
+import Score from '../models/scoreModel.js';
 
 const createScore = async ({ score, userId }) => {
   const newScore = new Score({ score, userId });
@@ -19,9 +19,35 @@ const getTopThreeScores = async (userId) => {
   }
 };
 
+const getLeaderboard = async () => {
+  try {
+    const topScores = await Score.find()
+      .sort({ score: -1 })
+      .limit(10)
+      .populate({
+        path: 'userId',
+        select: 'username'
+      })
+      .select('score createdAt userId')
+      .lean();
+
+    const formattedScores = topScores.map(score => ({
+      score: score.score,
+      createdAt: score.createdAt,
+      username: score.userId?.username || 'Unknown Player'
+    }));
+
+    return formattedScores; 
+  } catch (error) {
+    console.error('Error in getLeaderboard:', error);
+    throw new Error(`Error fetching leaderboard: ${error.message}`);
+  }
+};
+
 const ScoreService = {
   createScore,
-  getTopThreeScores
+  getTopThreeScores,
+  getLeaderboard
 };
 
 export default ScoreService; 

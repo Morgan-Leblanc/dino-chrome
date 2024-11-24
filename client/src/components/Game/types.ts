@@ -6,6 +6,7 @@ export interface Obstacle {
     width: number;
     height: number;
     hasScroll: boolean;
+    speed: number;
   }
   
   export interface Hitbox {

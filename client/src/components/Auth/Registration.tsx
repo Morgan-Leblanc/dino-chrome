@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { TextInput, PasswordInput, Button, Text, Box, Title } from '@mantine/core';
+import { TextInput, PasswordInput, Button, Text, Title } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { AuthLayout } from './AuthLayout';
-import { authService } from '../services/authServices';
+import { authService } from '../../services/authServices';
 
 const Registration : React.FC  = () => {
   const navigate = useNavigate();

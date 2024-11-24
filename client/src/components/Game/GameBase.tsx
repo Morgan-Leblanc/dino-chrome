@@ -37,7 +37,7 @@ import {
 
 import { INITIAL_STATE } from './config/constants';
 import { GameState } from './types';
-import { scoreService } from 'components/services/scoreService';
+import { scoreService } from 'services/scoreService';
 
 const GameBase = () => {
   const [gameState, setGameState] = useState<GameState>(INITIAL_STATE);

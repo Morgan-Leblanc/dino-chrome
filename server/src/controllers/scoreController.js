@@ -33,3 +33,17 @@ export const getTopThreeScores = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const getLeaderboard = async (req, res) => {
+  try {
+    const leaderboard = await ScoreService.getLeaderboard();
+    res.status(200).json({
+      data: leaderboard
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Erreur lors de la récupération du leaderboard',
+      error: error.message 
+    });
+  }
+};

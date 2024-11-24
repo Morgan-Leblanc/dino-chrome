@@ -3,9 +3,10 @@ import { Button, Group } from '@mantine/core';
 interface HeaderButtonsProps {
   onLogout: () => void;
   onOpenScores: () => void;
+  onOpenLeaderboard: () => void;
 }
 
-export const HeaderButtons: React.FC<HeaderButtonsProps> = ({ onLogout, onOpenScores }) => (
+export const HeaderButtons: React.FC<HeaderButtonsProps> = ({ onLogout, onOpenScores, onOpenLeaderboard }) => (
   <Group 
     style={{ 
       position: 'absolute', 
@@ -46,6 +47,21 @@ export const HeaderButtons: React.FC<HeaderButtonsProps> = ({ onLogout, onOpenSc
       }}
     >
       Top Scores
+    </Button>
+    <Button
+      color="blue"
+      onClick={onOpenLeaderboard}
+      style={{
+        fontWeight: 600,
+        padding: '1vh 2vh',
+        height: 'auto',
+        transition: 'transform 0.2s ease',
+        '&:hover': {
+          transform: 'translateY(-2px)',
+        }
+      }}
+    >
+      Leaderboard
     </Button>
   </Group>
 );

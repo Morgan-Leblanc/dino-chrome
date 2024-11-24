@@ -1,49 +1,45 @@
 import { Modal, Text, Stack, Title, Box, Loader } from '@mantine/core';
 import { useCallback, useEffect, useState } from 'react';
 import { scoreService } from '../../services/scoreService';
-import { useSelector } from 'react-redux';
-import { RootState } from 'redux/store';
-import {Score} from '../../types/score'
+import { Score } from '../../types/score';
 
-interface TopScoresModalProps {
+interface LeaderboardModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const TopScoresModal = ({ isOpen, onClose }: TopScoresModalProps) => {
+export const LeaderboardModal = ({ isOpen, onClose }: LeaderboardModalProps) => {
   const [scores, setScores] = useState<Score[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const userId = useSelector((state: RootState) => state.user.id);
 
-  const fetchTopScores = useCallback(async () => {
-    if (!userId) return;
-
+  const fetchLeaderboard = useCallback(async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const scores = await scoreService.getTopScores(userId);
-      setScores(scores);
+      const leaderboard = await scoreService.getLeaderboard();
+      
+      setScores(leaderboard);
     } catch (err) {
-      setError("Can't get the scores");
-      console.error('Error fetching scores:', err);
+      setError("Can't get the leaderboard");
+      console.error('Error fetching leaderboard:', err);
     } finally {
       setLoading(false);
     }
-  }, [userId]);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
-      fetchTopScores();
+      fetchLeaderboard();
     }
-  }, [isOpen, fetchTopScores]);
+  }, [isOpen, fetchLeaderboard]);
 
   return (
     <Modal
       opened={isOpen}
       onClose={onClose}
-      title={<Title order={2}>My Top Scores</Title>}
+      title={<Title order={2}>Global Leaderboard</Title>}
     >
       <Stack>
         {loading ? (
@@ -65,18 +61,23 @@ export const TopScoresModal = ({ isOpen, onClose }: TopScoresModalProps) => {
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
               }}
             >
-              <Text 
-              >
-                #{index + 1} - {score.score} points
-              </Text>
               <Text>
+                #{index + 1} - {score.score} points
+                {score && (
+                  <Text span ml="md" fw={400}>
+                    by {score.username}
+                  </Text>
+                )}
+              </Text>
+              <Text></Text>
+              <Text size="sm" c="dimmed">
                 {new Date(score.createdAt).toLocaleDateString()}
               </Text>
             </Box>
           ))
         ) : (
           <Text ta="center" c="dimmed" size="lg">
-            No score registered !
+            No scores yet!
           </Text>
         )}
       </Stack>

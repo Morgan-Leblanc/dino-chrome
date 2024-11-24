@@ -13,5 +13,11 @@ export const scoreService = {
   getTopScores: async (userId: string) => {
     const { data } = await api.get(`/api/scores/topscore/${userId}`);
     return data;
-  }
+  },
+
+  getLeaderboard: async () => {
+    const { data } = await api.get('api/scores/leaderboard');
+    return data.data;
+  },
+
 };

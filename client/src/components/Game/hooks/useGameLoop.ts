@@ -1,6 +1,5 @@
 import { useRef, useEffect } from 'react';
 import { GameState } from '../types';
-import { GAME_CONFIG } from '../config/gameConfig';
 import { useCollisions } from './useCollisions';
 import { useBackground } from './useBackground';
 
@@ -63,9 +62,9 @@ export const useGameLoop = ({
       obstacles: prev.obstacles
         .map(obstacle => ({
           ...obstacle,
-          x: obstacle.x - GAME_CONFIG.OBSTACLE_SPEED,
+          x: obstacle.x - obstacle.speed,
         }))
-        .filter(obstacle => obstacle.x > -GAME_CONFIG.OBSTACLE_SIZE),
+        .filter(obstacle => obstacle.x + obstacle.width > 0),
     }));
 
     onScoreIncrement();

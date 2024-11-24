@@ -10,9 +10,11 @@ import { WelcomeSection } from '../components/Launcher/WelcomeSection';
 import { StartGameButton } from '../components/Launcher/StartGameButton';
 import CharacterSelector from '../components/CharacterSelector/CharacterList';
 import { TopScoresModal } from '../components/Launcher/TopScoresModal';
+import { LeaderboardModal } from 'components/Launcher/LeaderboardModal';
 
 const Launcher: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
@@ -58,6 +60,7 @@ const Launcher: React.FC = () => {
         <HeaderButtons 
           onLogout={handleLogout}
           onOpenScores={() => setIsModalOpen(true)}
+          onOpenLeaderboard={() => setIsLeaderboardOpen(true) }
         />
 
         <Stack 
@@ -85,6 +88,10 @@ const Launcher: React.FC = () => {
         <TopScoresModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
+        />
+        <LeaderboardModal 
+          isOpen={isLeaderboardOpen} 
+          onClose={() => setIsLeaderboardOpen(false)} 
         />
       </Card>
     </Container>

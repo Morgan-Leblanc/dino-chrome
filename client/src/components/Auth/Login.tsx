@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { setUser } from '../../redux/slices/userSlice';
 import { useDispatch } from 'react-redux';
 import { AuthLayout } from './AuthLayout';
-import { authService } from '../services/authServices';
+import { authService } from '../../services/authServices';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();

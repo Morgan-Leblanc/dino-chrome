@@ -22,11 +22,7 @@ describe('User Routes', () => {
       const response = await request(app)
         .get('/api/users/me')
         .set('Authorization', `Bearer ${token}`);
-
-      if (response.status !== 200) {
-        console.log('Error response:', response.body);
-      }
-
+        
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('user');
       expect(response.body.user).toHaveProperty('accountName', 'testuser');

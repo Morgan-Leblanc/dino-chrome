@@ -1,5 +1,4 @@
 import UserService from '../services/userService.js';
-import ScoreService from '../services/scoreService.js';
 
 export const getProfile = async (req, res) => {
   try {
