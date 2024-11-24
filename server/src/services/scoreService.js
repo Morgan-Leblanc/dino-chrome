@@ -1,4 +1,4 @@
-import Score from '../models/scoreModel.js';
+import Score from '../models/ScoreModel.js';
 
 const createScore = async ({ score, userId }) => {
   const newScore = new Score({ score, userId });
