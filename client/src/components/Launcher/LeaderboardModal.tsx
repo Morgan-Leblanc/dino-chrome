@@ -1,5 +1,6 @@
 import { Modal, Text, Stack, Title, Box, Loader } from '@mantine/core';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { scoreService } from '../../services/scoreService';
 import { Score } from '../../types/score';
 
@@ -9,6 +10,7 @@ interface LeaderboardModalProps {
 }
 
 export const LeaderboardModal = ({ isOpen, onClose }: LeaderboardModalProps) => {
+  const { t, i18n } = useTranslation();
   const [scores, setScores] = useState<Score[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,15 +21,14 @@ export const LeaderboardModal = ({ isOpen, onClose }: LeaderboardModalProps) => 
 
     try {
       const leaderboard = await scoreService.getLeaderboard();
-      
       setScores(leaderboard);
     } catch (err) {
-      setError("Can't get the leaderboard");
+      setError(t('modals.errorLeaderboard'));
       console.error('Error fetching leaderboard:', err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (isOpen) {
@@ -39,7 +40,7 @@ export const LeaderboardModal = ({ isOpen, onClose }: LeaderboardModalProps) => 
     <Modal
       opened={isOpen}
       onClose={onClose}
-      title={<Title order={2}>Global Leaderboard</Title>}
+      title={<Title order={2}>{t('modals.globalLeaderboard')}</Title>}
     >
       <Stack>
         {loading ? (
@@ -47,7 +48,9 @@ export const LeaderboardModal = ({ isOpen, onClose }: LeaderboardModalProps) => 
             <Loader color="blue" />
           </Box>
         ) : error ? (
-          <Text c="red" ta="center">{error}</Text>
+          <Text c="red" ta="center">
+            {error}
+          </Text>
         ) : scores.length > 0 ? (
           scores.map((score, index) => (
             <Box
@@ -62,22 +65,21 @@ export const LeaderboardModal = ({ isOpen, onClose }: LeaderboardModalProps) => 
               }}
             >
               <Text>
-                #{index + 1} - {score.score} points
-                {score && (
+                #{index + 1} – {t('modals.points', { count: score.score })}
+                {score.username && (
                   <Text span ml="md" fw={400}>
-                    by {score.username}
+                    – {score.username}
                   </Text>
                 )}
               </Text>
-              <Text></Text>
               <Text size="sm" c="dimmed">
-                {new Date(score.createdAt).toLocaleDateString()}
+                {new Date(score.createdAt).toLocaleDateString(i18n.language)}
               </Text>
             </Box>
           ))
         ) : (
           <Text ta="center" c="dimmed" size="lg">
-            No scores yet!
+            {t('modals.noScoresYet')}
           </Text>
         )}
       </Stack>

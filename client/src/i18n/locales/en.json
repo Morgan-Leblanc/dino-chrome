@@ -1,0 +1,60 @@
+{
+  "auth": {
+    "login": {
+      "title": "Login",
+      "accountName": "Account name",
+      "accountNamePlaceholder": "Your account name",
+      "password": "Password",
+      "passwordPlaceholder": "Your password",
+      "submit": "Login",
+      "success": "Login successful",
+      "noAccount": "No account yet?",
+      "registerLink": "Sign up"
+    },
+    "register": {
+      "title": "Sign up",
+      "accountName": "Account name",
+      "accountNamePlaceholder": "Choose an account name",
+      "username": "Username",
+      "usernamePlaceholder": "Your display name",
+      "password": "Password",
+      "passwordPlaceholder": "Choose a password",
+      "submit": "Sign up",
+      "success": "Account created. Log in.",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "switch": {
+      "notRegistered": "Not registered yet?",
+      "hasAccount": "Already have an account?",
+      "register": "Sign up",
+      "login": "Log in"
+    }
+  },
+  "launcher": {
+    "title": "Dino Game",
+    "welcome": "Welcome, {{username}}!",
+    "lastScore": "Last score: {{score}}",
+    "logout": "Logout",
+    "topScores": "My scores",
+    "leaderboard": "Leaderboard",
+    "startGame": "Play"
+  },
+  "game": {
+    "score": "Score",
+    "startGame": "Play",
+    "finalScore": "Final score",
+    "menu": "Back to menu",
+    "gameOver": "Game over",
+    "hintJump": "Space or click to jump"
+  },
+  "modals": {
+    "myTopScores": "My top scores",
+    "globalLeaderboard": "Global leaderboard",
+    "points": "{{count}} pts",
+    "noScores": "No score registered.",
+    "noScoresYet": "No scores yet!",
+    "errorScores": "Could not load scores.",
+    "errorLeaderboard": "Could not load leaderboard."
+  }
+}

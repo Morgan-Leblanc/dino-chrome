@@ -1,4 +1,6 @@
 import { Button, Group } from '@mantine/core';
+import { useTranslation } from 'react-i18next';
+import { LanguageSwitcher } from '../LanguageSwitcher/LanguageSwitcher';
 
 interface HeaderButtonsProps {
   onLogout: () => void;
@@ -6,17 +8,20 @@ interface HeaderButtonsProps {
   onOpenLeaderboard: () => void;
 }
 
-export const HeaderButtons: React.FC<HeaderButtonsProps> = ({ onLogout, onOpenScores, onOpenLeaderboard }) => (
-  <Group 
-    style={{ 
-      position: 'absolute', 
-      top: '2vh', 
+export const HeaderButtons: React.FC<HeaderButtonsProps> = ({ onLogout, onOpenScores, onOpenLeaderboard }) => {
+  const { t } = useTranslation();
+  return (
+  <Group
+    style={{
+      position: 'absolute',
+      top: '2vh',
       left: '2vh',
       right: '2vh',
       width: 'calc(100% - 4vh)',
-      justifyContent: 'space-between'
+      justifyContent: 'space-between',
     }}
   >
+    <Group>
     <Button
       color="red"
       onClick={onLogout}
@@ -31,7 +36,7 @@ export const HeaderButtons: React.FC<HeaderButtonsProps> = ({ onLogout, onOpenSc
         }
       }}
     >
-      Logout
+      {t('launcher.logout')}
     </Button>
     <Button
       color="yellow"
@@ -46,7 +51,7 @@ export const HeaderButtons: React.FC<HeaderButtonsProps> = ({ onLogout, onOpenSc
         }
       }}
     >
-      Top Scores
+      {t('launcher.topScores')}
     </Button>
     <Button
       color="blue"
@@ -61,7 +66,10 @@ export const HeaderButtons: React.FC<HeaderButtonsProps> = ({ onLogout, onOpenSc
         }
       }}
     >
-      Leaderboard
+      {t('launcher.leaderboard')}
     </Button>
+    </Group>
+    <LanguageSwitcher />
   </Group>
-);
+  );
+};

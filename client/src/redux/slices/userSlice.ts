@@ -1,14 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { User } from '../../types/user';
 import { RootState } from '../store';
 
-type CharacterType = 'boy' | 'girl' | null; 
+export type CharacterType = 'boy' | 'girl' | null;
 
-
-interface UserState {
-  id: string ;
-  accountName: string ;
-  username: string;
-  token: string,
+export interface UserState extends User {
+  token: string;
   selectedCharacter: CharacterType;
 }
 

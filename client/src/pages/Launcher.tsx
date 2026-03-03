@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, Box, Container, Stack, Center } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'redux/store';
+import { RootState } from '../redux/store';
 import { logout } from '../redux/slices/userSlice';
 import { HeaderButtons } from '../components/Launcher/HeaderButtons';
 import { GameTitle } from '../components/Launcher/GameTitle';
@@ -10,7 +10,7 @@ import { WelcomeSection } from '../components/Launcher/WelcomeSection';
 import { StartGameButton } from '../components/Launcher/StartGameButton';
 import CharacterSelector from '../components/CharacterSelector/CharacterList';
 import { TopScoresModal } from '../components/Launcher/TopScoresModal';
-import { LeaderboardModal } from 'components/Launcher/LeaderboardModal';
+import { LeaderboardModal } from '../components/Launcher/LeaderboardModal';
 
 const Launcher: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,7 +18,7 @@ const Launcher: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
-  const score = useSelector((state: RootState) => state.game.score);
+  const lastScore = useSelector((state: RootState) => state.game.finalScore);
   const username = useSelector((state: RootState) => state.user.username);
   const characterSelected = useSelector((state: RootState) => state.user.selectedCharacter);
 
@@ -70,7 +70,7 @@ const Launcher: React.FC = () => {
         >
           <Box mt="8vh">
             <GameTitle />
-            <WelcomeSection username={username || ''} score={score} />
+            <WelcomeSection username={username || ''} score={lastScore} />
           </Box>
 
           <Center style={{ flex: 1 }}>

@@ -4,8 +4,9 @@ dotenv.config();
 
 export const config = {
   port: process.env.PORT || 5001,
-  mongodb: {
-    uri: process.env.MONGODB_URI
+  supabase: {
+    url: process.env.SUPABASE_URL,
+    serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY
   },
   env: process.env.NODE_ENV
 };

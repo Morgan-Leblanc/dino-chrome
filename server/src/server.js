@@ -1,5 +1,4 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
 import { helmet, rateLimit } from './middlewares/security/index.js';
 import { corsOptions } from './config/cors.js';
@@ -22,16 +21,8 @@ app.use('/api', routes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-// Database connection and server start
-if (config.env !== 'test') {
-  mongoose.connect(config.mongodb.uri)
-    .then(() => {
-      console.log('Connected to MongoDB');
-      app.listen(config.port, () => {
-        console.log(`Server is running on port ${config.port}`);
-      });
-    })
-    .catch(err => console.error('MongoDB connection error:', err));
-}
+app.listen(config.port, () => {
+  console.log(`Server is running on port ${config.port}`);
+});
 
 export default app;

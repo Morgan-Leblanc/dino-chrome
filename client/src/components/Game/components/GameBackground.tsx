@@ -6,14 +6,15 @@ import { ReactNode } from 'react';
 interface GameBackgroundProps {
   gameRef: React.RefObject<HTMLDivElement>;
   children: ReactNode;
+  shake?: boolean;
 }
 
-export const GameBackground = ({ gameRef, children }: GameBackgroundProps) => (
+export const GameBackground = ({ gameRef, children, shake = false }: GameBackgroundProps) => (
   <Box
     ref={gameRef}
     style={{
-      width: '100vw',
-      height: '100vh',
+      width: '100%',
+      height: '100%',
       position: 'relative',
       overflow: 'hidden',
       backgroundImage: `url(${ASSETS.background})`,
@@ -22,10 +23,12 @@ export const GameBackground = ({ gameRef, children }: GameBackgroundProps) => (
       backgroundRepeat: 'repeat-x',
       imageRendering: 'pixelated',
       transition: 'none',
+      animation: shake ? 'gameScreenShake 0.28s ease-out' : undefined,
     }}
   >
     <style>{ANIMATIONS.collectPulse}</style>
     <style>{ANIMATIONS.collision}</style>
+    <style>{ANIMATIONS.screenShake}</style>
     {children}
   </Box>
 );

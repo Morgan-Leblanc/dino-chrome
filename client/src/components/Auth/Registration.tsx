@@ -1,56 +1,71 @@
 import React, { useState } from 'react';
 import { TextInput, PasswordInput, Button, Text, Title } from '@mantine/core';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { AuthLayout } from './AuthLayout';
-import { authService } from '../../services/authServices';
+import { useAuth } from '../../hooks/useAuth';
 
-const Registration : React.FC  = () => {
+const Registration: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { register, loading, error } = useAuth();
   const [accountName, setAccountName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleRegistration = async () => {
-    try {
-      const response = await authService.register(accountName, username, password);
-      setMessage(response.message);
+    setSuccessMessage('');
+    const ok = await register(accountName, username, password);
+    if (ok) {
+      setSuccessMessage(t('auth.register.success'));
       navigate('/login');
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || "Registration error";
-      setMessage(errorMessage);
     }
   };
 
+  const message = successMessage || error;
+  const isSuccess = Boolean(successMessage);
+
   return (
     <AuthLayout>
-      <Title order={2}>Registration</Title>
+      <Title order={2}>{t('auth.register.title')}</Title>
       <TextInput
-        label="Account name"
-        placeholder="Enter your account name"
+        label={t('auth.register.accountName')}
+        placeholder={t('auth.register.accountNamePlaceholder')}
         value={accountName}
         onChange={(e) => setAccountName(e.target.value)}
         required
+        autoComplete="username"
+        aria-describedby={message ? 'register-message' : undefined}
       />
       <TextInput
-        label="Username"
-        placeholder="Enter your username"
+        label={t('auth.register.username')}
+        placeholder={t('auth.register.usernamePlaceholder')}
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         required
+        autoComplete="name"
       />
       <PasswordInput
-        label="Password"
-        placeholder="Enter your password"
+        label={t('auth.register.password')}
+        placeholder={t('auth.register.passwordPlaceholder')}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         required
+        autoComplete="new-password"
       />
-      <Button fullWidth mt="md" onClick={handleRegistration}>
-        Register
+      <Button fullWidth mt="md" onClick={handleRegistration} loading={loading} disabled={loading}>
+        {t('auth.register.submit')}
       </Button>
-      {message && <Text c="red" mt="md" component="p">{message}</Text>}
-      </AuthLayout>
+      {message && (
+        <Text id="register-message" role="alert" c={isSuccess ? 'green' : 'red'} mt="md">
+          {message}
+        </Text>
+      )}
+      <Text size="sm" c="dimmed" mt="md">
+        {t('auth.register.hasAccount')} <Link to="/login">{t('auth.register.loginLink')}</Link>
+      </Text>
+    </AuthLayout>
   );
 };
 

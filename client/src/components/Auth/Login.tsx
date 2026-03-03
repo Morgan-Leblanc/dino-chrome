@@ -1,77 +1,63 @@
 import React, { useState } from 'react';
 import { TextInput, PasswordInput, Button, Text, Title } from '@mantine/core';
-import { useNavigate } from 'react-router-dom';
-import { setUser } from '../../redux/slices/userSlice';
-import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { AuthLayout } from './AuthLayout';
-import { authService } from '../../services/authServices';
+import { useAuth } from '../../hooks/useAuth';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [accountName, setAccountName] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
+  const { t } = useTranslation();
+  const { login, loading, error } = useAuth();
+  const [accountName, setAccountName] = useState('');
+  const [password, setPassword] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleLogin = async () => {
-    try {
-      const { data: { token, user } } = await authService.login(accountName, password);
-      
-      localStorage.setItem('token', token);
-      
-      dispatch(setUser({
-        id: user._id,
-        accountName: user.accountName,
-        username: user.username,
-        token
-      }));
-
-      setMessage('Login successful');
+    setSuccessMessage('');
+    const ok = await login(accountName, password);
+    if (ok) {
+      setSuccessMessage(t('auth.login.success'));
       navigate('/launcher');
-
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || "Connection error";
-      setMessage(errorMessage);
     }
   };
 
+  const message = successMessage || error;
+  const isSuccess = Boolean(successMessage);
 
   return (
     <AuthLayout>
-      <Title order={2}>Login</Title>
+      <Title order={2}>{t('auth.login.title')}</Title>
       <TextInput
-        label="Account name"
-        placeholder="Your account name"
+        label={t('auth.login.accountName')}
+        placeholder={t('auth.login.accountNamePlaceholder')}
         value={accountName}
         onChange={(e) => setAccountName(e.target.value)}
         required
+        autoComplete="username"
+        aria-describedby={message ? 'login-message' : undefined}
       />
       <PasswordInput
-        label="Password"
-        placeholder="Your password"
+        label={t('auth.login.password')}
+        placeholder={t('auth.login.passwordPlaceholder')}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         required
+        autoComplete="current-password"
       />
-      <Button 
-        fullWidth 
-        mt="md" 
-        onClick={handleLogin}
-      >
-        Login
+      <Button fullWidth mt="md" onClick={handleLogin} loading={loading} disabled={loading}>
+        {t('auth.login.submit')}
       </Button>
       {message && (
-        <Text 
-          c={message === 'Login successful' ? 'green' : 'red'} 
-          mt="md"
-        >
+        <Text id="login-message" role="alert" c={isSuccess ? 'green' : 'red'} mt="md">
           {message}
         </Text>
       )}
-   </AuthLayout>
+      <Text size="sm" c="dimmed" mt="md">
+        {t('auth.login.noAccount')} <Link to="/register">{t('auth.login.registerLink')}</Link>
+      </Text>
+    </AuthLayout>
   );
 };
 
 export default Login;
-
-

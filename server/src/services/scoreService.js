@@ -1,47 +1,49 @@
-import Score from '../models/ScoreModel.js';
+import { supabase } from '../config/supabase.js';
 
 const createScore = async ({ score, userId }) => {
-  const newScore = new Score({ score, userId });
-  return await newScore.save();
+  const { data, error } = await supabase
+    .from('scores')
+    .insert({ user_id: userId, score })
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data;
 };
 
 const getTopThreeScores = async (userId) => {
-  try {
-    const topScores = await Score.find({ userId })
-      .sort({ score: -1 }) 
-      .limit(3) 
-      .select('score createdAt') 
-      .lean(); 
+  const { data, error } = await supabase
+    .from('scores')
+    .select('score, created_at')
+    .eq('user_id', userId)
+    .order('score', { ascending: false })
+    .limit(3);
 
-    return topScores;
-  } catch (error) {
-    throw new Error(`Error: ${error.message}`);
-  }
+  if (error) throw new Error(error.message);
+  return (data ?? []).map((row) => ({
+    score: row.score,
+    createdAt: row.created_at
+  }));
 };
 
 const getLeaderboard = async () => {
-  try {
-    const topScores = await Score.find()
-      .sort({ score: -1 })
-      .limit(10)
-      .populate({
-        path: 'userId',
-        select: 'username'
-      })
-      .select('score createdAt userId')
-      .lean();
+  const { data: scores, error } = await supabase
+    .from('scores')
+    .select(`
+      score,
+      created_at,
+      users ( username )
+    `)
+    .order('score', { ascending: false })
+    .limit(10);
 
-    const formattedScores = topScores.map(score => ({
-      score: score.score,
-      createdAt: score.createdAt,
-      username: score.userId?.username || 'Unknown Player'
-    }));
+  if (error) throw new Error(error.message);
 
-    return formattedScores; 
-  } catch (error) {
-    console.error('Error in getLeaderboard:', error);
-    throw new Error(`Error fetching leaderboard: ${error.message}`);
-  }
+  return (scores ?? []).map((row) => ({
+    score: row.score,
+    createdAt: row.created_at,
+    username: row.users?.username ?? 'Unknown Player'
+  }));
 };
 
 const ScoreService = {
@@ -50,4 +52,4 @@ const ScoreService = {
   getLeaderboard
 };
 
-export default ScoreService; 
+export default ScoreService;

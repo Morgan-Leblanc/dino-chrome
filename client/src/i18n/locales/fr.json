@@ -1,0 +1,60 @@
+{
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "accountName": "Nom de compte",
+      "accountNamePlaceholder": "Ton nom de compte",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "Ton mot de passe",
+      "submit": "Se connecter",
+      "success": "Connexion réussie",
+      "noAccount": "Pas encore de compte ?",
+      "registerLink": "S'inscrire"
+    },
+    "register": {
+      "title": "Inscription",
+      "accountName": "Nom de compte",
+      "accountNamePlaceholder": "Choisis un nom de compte",
+      "username": "Pseudo",
+      "usernamePlaceholder": "Ton pseudo affiché",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "Choisis un mot de passe",
+      "submit": "S'inscrire",
+      "success": "Compte créé. Connecte-toi.",
+      "hasAccount": "Déjà un compte ?",
+      "loginLink": "Se connecter"
+    },
+    "switch": {
+      "notRegistered": "Pas encore de compte ?",
+      "hasAccount": "Déjà un compte ?",
+      "register": "S'inscrire",
+      "login": "Se connecter"
+    }
+  },
+  "launcher": {
+    "title": "Dino Game",
+    "welcome": "Bienvenue, {{username}} !",
+    "lastScore": "Dernier score : {{score}}",
+    "logout": "Déconnexion",
+    "topScores": "Mes scores",
+    "leaderboard": "Classement",
+    "startGame": "Jouer"
+  },
+  "game": {
+    "score": "Score",
+    "startGame": "Jouer",
+    "finalScore": "Score final",
+    "menu": "Retour au menu",
+    "gameOver": "Partie terminée",
+    "hintJump": "Espace ou clic pour sauter"
+  },
+  "modals": {
+    "myTopScores": "Mes meilleurs scores",
+    "globalLeaderboard": "Classement mondial",
+    "points": "{{count}} pts",
+    "noScores": "Aucun score enregistré.",
+    "noScoresYet": "Aucun score pour l'instant.",
+    "errorScores": "Impossible de charger les scores.",
+    "errorLeaderboard": "Impossible de charger le classement."
+  }
+}

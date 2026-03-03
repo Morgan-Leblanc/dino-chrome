@@ -5,7 +5,7 @@ import auth from '../middlewares/validation/authValidation.js';
 const router = Router();
 
 router.post('/savescore', auth, saveScore);
-router.get('/topscore/:userId', auth, getTopThreeScores);
+router.get('/topscore', auth, getTopThreeScores);
 router.get('/leaderboard', getLeaderboard)
 
 export default router; 

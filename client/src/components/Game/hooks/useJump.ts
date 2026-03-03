@@ -42,8 +42,9 @@ export const useJump = ({ isRunning, isJumping, setGameState }: UseJumpProps) =>
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.code === 'Space' && isRunning && canJump) {
-        jump();
+      if (event.code === 'Space' && isRunning) {
+        event.preventDefault();
+        if (canJump) jump();
       }
     };
 

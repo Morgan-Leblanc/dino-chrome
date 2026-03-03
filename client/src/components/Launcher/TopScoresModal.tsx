@@ -1,9 +1,10 @@
 import { Modal, Text, Stack, Title, Box, Loader } from '@mantine/core';
 import { useCallback, useEffect, useState } from 'react';
-import { scoreService } from '../../services/scoreService';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { RootState } from 'redux/store';
-import {Score} from '../../types/score'
+import { RootState } from '../../redux/store';
+import { scoreService } from '../../services/scoreService';
+import { Score } from '../../types/score';
 
 interface TopScoresModalProps {
   isOpen: boolean;
@@ -11,6 +12,7 @@ interface TopScoresModalProps {
 }
 
 export const TopScoresModal = ({ isOpen, onClose }: TopScoresModalProps) => {
+  const { t, i18n } = useTranslation();
   const [scores, setScores] = useState<Score[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -23,15 +25,15 @@ export const TopScoresModal = ({ isOpen, onClose }: TopScoresModalProps) => {
     setError(null);
 
     try {
-      const scores = await scoreService.getTopScores(userId);
-      setScores(scores);
+      const data = await scoreService.getTopScores();
+      setScores(data);
     } catch (err) {
-      setError("Can't get the scores");
+      setError(t('modals.errorScores'));
       console.error('Error fetching scores:', err);
     } finally {
       setLoading(false);
     }
-  }, [userId]);
+  }, [userId, t]);
 
   useEffect(() => {
     if (isOpen) {
@@ -40,18 +42,16 @@ export const TopScoresModal = ({ isOpen, onClose }: TopScoresModalProps) => {
   }, [isOpen, fetchTopScores]);
 
   return (
-    <Modal
-      opened={isOpen}
-      onClose={onClose}
-      title={<Title order={2}>My Top Scores</Title>}
-    >
+    <Modal opened={isOpen} onClose={onClose} title={<Title order={2}>{t('modals.myTopScores')}</Title>}>
       <Stack>
         {loading ? (
           <Box style={{ display: 'flex', justifyContent: 'center', padding: 20 }}>
             <Loader color="blue" />
           </Box>
         ) : error ? (
-          <Text c="red" ta="center">{error}</Text>
+          <Text c="red" ta="center">
+            {error}
+          </Text>
         ) : scores.length > 0 ? (
           scores.map((score, index) => (
             <Box
@@ -65,18 +65,15 @@ export const TopScoresModal = ({ isOpen, onClose }: TopScoresModalProps) => {
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
               }}
             >
-              <Text 
-              >
-                #{index + 1} - {score.score} points
-              </Text>
               <Text>
-                {new Date(score.createdAt).toLocaleDateString()}
+                #{index + 1} – {t('modals.points', { count: score.score })}
               </Text>
+              <Text>{new Date(score.createdAt).toLocaleDateString(i18n.language)}</Text>
             </Box>
           ))
         ) : (
           <Text ta="center" c="dimmed" size="lg">
-            No score registered !
+            {t('modals.noScores')}
           </Text>
         )}
       </Stack>

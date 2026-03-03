@@ -7,7 +7,7 @@ import Launcher from './pages/Launcher';
 import AuthSwitcher from './pages/AuthSwitcher';
 import Game from './pages/Game';
 import './App.css';
-import { RootState } from 'redux/store';
+import { RootState } from './redux/store';
 
 interface RouteProps {
   children: ReactElement;

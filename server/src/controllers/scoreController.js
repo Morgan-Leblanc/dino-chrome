@@ -2,12 +2,13 @@ import ScoreService from '../services/scoreService.js';
 
 export const saveScore = async (req, res) => {
   try {
-    const { score, userId } = req.body;
-    
-    if (!score || !userId) {
-      return res.status(400).json({ 
+    const { score } = req.body;
+    const userId = req.user.id;
+
+    if (score == null || score === '') {
+      return res.status(400).json({
         message: 'Données manquantes',
-        received: { score, userId }
+        received: { score }
       });
     }
 
@@ -26,7 +27,7 @@ export const saveScore = async (req, res) => {
 
 export const getTopThreeScores = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user.id;
     const topScores = await ScoreService.getTopThreeScores(userId);
     res.status(200).json(topScores);
   } catch (error) {
