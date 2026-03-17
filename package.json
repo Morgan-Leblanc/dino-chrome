@@ -1,0 +1,14 @@
+{
+  "name": "dino-chrome",
+  "private": true,
+  "packageManager": "npm@11.4.2",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "build:client": "npm run build --workspace client",
+    "start:server": "npm run start --workspace server",
+    "test:server": "npm run test --workspace server"
+  }
+}
