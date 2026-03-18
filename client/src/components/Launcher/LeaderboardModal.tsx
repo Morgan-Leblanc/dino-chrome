@@ -69,7 +69,6 @@ export const LeaderboardModal = ({ isOpen, onClose }: LeaderboardModalProps) => 
                   </Text>
                 )}
               </Text>
-              <Text></Text>
               <Text size="sm" c="dimmed">
                 {new Date(score.createdAt).toLocaleDateString()}
               </Text>

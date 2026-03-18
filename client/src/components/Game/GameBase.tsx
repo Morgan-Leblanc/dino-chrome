@@ -89,7 +89,7 @@ const GameBase = () => {
     stopMusic();
     resetBackground();
     
-    if (animationFrameRef.current) {
+    if (animationFrameRef.current !== null) {
       cancelAnimationFrame(animationFrameRef.current);
     }
 

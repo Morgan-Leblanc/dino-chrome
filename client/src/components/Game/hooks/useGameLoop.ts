@@ -22,7 +22,7 @@ export const useGameLoop = ({
   onScoreIncrement,
   onScrollCollect
 }: UseGameLoopProps) => {
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | null>(null);
   const gameStateRef = useRef(gameState);
   const { getHitbox, isColliding } = useCollisions();
   const { updateBackground } = useBackground(gameRef);
@@ -79,7 +79,7 @@ export const useGameLoop = ({
 
     return () => {
       isGameRunning.current = false;
-      if (animationFrameRef.current) {
+      if (animationFrameRef.current !== null) {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
