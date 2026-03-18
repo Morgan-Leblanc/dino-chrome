@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import { GameState } from '../types';
 import { useCollisions } from './useCollisions';
 import { useBackground } from './useBackground';
@@ -31,7 +31,7 @@ export const useGameLoop = ({
     gameStateRef.current = gameState;
   }, [gameState]);
 
-  const gameLoop = () => {
+  const gameLoop = useCallback(() => {
     if (!isGameRunning.current) return;
 
     updateBackground();
@@ -69,7 +69,7 @@ export const useGameLoop = ({
 
     onScoreIncrement();
     animationFrameRef.current = requestAnimationFrame(gameLoop);
-  };
+  }, [getHitbox, isColliding, isGameRunning, onCollision, onScoreIncrement, onScrollCollect, setGameState, updateBackground]);
 
   useEffect(() => {
     if (gameState.isRunning) {
@@ -83,7 +83,7 @@ export const useGameLoop = ({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [gameState.isRunning]);
+  }, [gameLoop, gameState.isRunning, isGameRunning]);
 
   return { animationFrameRef };
 };
